@@ -1,0 +1,11 @@
+{
+  // compilerOptions : 코드 변환시 사용하는 속성들
+  "compilerOptions": {
+    "target": "es6", // 출력할 js 문법의 대상,
+    "module": "commonjs", // 사용하는 모듈 시스템
+    "strict": true, // 엄격한 타입 검사
+    "outDir": "./dist", // 파일을 변환한 뒤에 어느 경로로 내보낼거냐
+    "sourceMap": true, // 디버깅 소스를 만들어서 어디서 에러가 발생했는지 
+  },
+  "include": ["src/**/*"] // 컴파일할 파일의 경로를 지정 (* : 모든파일, ** : 모든 폴더)
+}
