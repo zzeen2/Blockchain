@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    function Foo(a,b) {
+    console.log(this);  //> window
+    return [a,b]
+}
+
+    const a = Foo(1,2);
+    console.log(a); //> [1,2]
+
+    const bar = {
+        method : Foo,
+    }
+
+    // bar 객체
+    // bar.method 스코프가 bar 객체의 스코프에서 호출이 됐기 때문에 상위 객체는 bar
+    const b = bar.method(2,3)
+    console.log(b); //> 
+
+    const bar2 = {
+        method : function () {
+            console.log(this)
+        }
+    }
+
+    bar2.method();
+
+    class Bar {
+        constructor () {
+
+        }
+        add = () => {
+            console.log(this); //> Bar 클래스 자체
+        }
+
+    }
+    const bar3 = new Bar(); // new 힙메모리 -> {} 생성자함수를 호출 스코프
+    Bar.add();
+</script>
+</html>
