@@ -1,0 +1,23 @@
+{
+  // 컴파일할 폴더 경로
+  // 경로 패턴
+  // /* : 모든 파일
+  // /** : 모든 폴더
+  // src 폴더에 모든 폴더와 파일  src/**/*
+  "include": [
+    "src/**/*"
+  ],
+  // test 테스트 코드를 작성하고 단일 테스트 등등 진행할 파일등
+  // 컴파일할때 불필요한 파일들
+  // explne.test.ts
+  // 상대경로부터 모든 폴더 안에 파일이름은 * 전부 .test.ts
+  "exclude": [
+    "**/*.test.ts"
+  ],
+  // compilerOptions 컴파일할때 사용할 속성 정의
+  "compilerOptions": { 
+    "target": "ES6",
+    "outDir": "./dist",
+    "removeComments": true
+  }
+}

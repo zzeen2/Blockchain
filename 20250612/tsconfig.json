@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    // 모듈 시스템 정의
+    "module": "commonjs",
+    // 컴파일 이후 내보낼 경로 디렉터리
+    "outDir": "./dist",
+
+    // 타입 스크립트가 자바스크립트의 버전으로 변환할 버전 지정
+    "target": "ES6",
+
+    // commonjs import 할때 모듈의 의존성 결합성
+    "esModuleInterop": true,
+  }
+}

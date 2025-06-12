@@ -1,0 +1,9 @@
+{
+  "include": ["core"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "./dist",
+    "target": "ES6",
+    "esModuleInterop" : true,
+  }
+}

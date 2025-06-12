@@ -1,0 +1,23 @@
+{
+  "name": "block",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@jest/types": "^30.0.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/merkle": "^0.6.4",
+    "crypto-js": "^4.2.0",
+    "merkle": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "jest": "^30.0.0"
+  }
+}
