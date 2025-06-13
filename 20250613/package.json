@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/jest": "^29.5.11",
+    "@types/merkle": "^0.6.4",
+    "@types/node": "^24.0.0",
+    "crypto-js": "^4.2.0",
+    "elliptic": "^6.6.1",
+    "express": "^5.1.0",
+    "jest": "^29.7.0",
+    "merkle": "^0.6.0",
+    "ts-jest": "^29.3.4",
+    "ts-node": "^10.9.2"
+  }
+}
