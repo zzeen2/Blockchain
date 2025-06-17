@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>간단한 P2P 블록체인 노드</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      button {
+        margin-top: 10px;
+      }
+      pre {
+        background: #eee;
+        padding: 10px;
+        overflow-x: auto;
+        max-height: 300px;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <h1>노드 상태</h1>
+
+    <h2>지갑</h2>
+    <p><strong>공개키:</strong> <span id="publicKey"></span></p>
+    <p><strong>잔액:</strong> <span id="balance"></span></p>
+
+    <button id="refreshBtn">상태 새로고침</button>
+
+    <h2>트랜잭션 생성</h2>
+    <form id="txForm">
+      받는 주소:<br />
+      <input type="text" id="toAddress" size="60" required /><br />
+      금액:<br />
+      <input type="number" id="amount" min="0" required /><br />
+      <button type="submit">트랜잭션 전송</button>
+    </form>
+    <p id="txResult"></p>
+
+    <h2>블록 채굴</h2>
+    <button id="mineBtn">블록 채굴하기</button>
+    <p id="mineResult"></p>
+
+    <h2>블록체인</h2>
+    <pre id="chain"></pre>
+
+    <h2>메모풀</h2>
+    <pre id="mempool"></pre>
+
+    <script>
+      // querySelector로 DOM 요소 캐싱
+      const publicKeyEl = document.querySelector("#publicKey");
+      const balanceEl = document.querySelector("#balance");
+      const chainEl = document.querySelector("#chain");
+      const mempoolEl = document.querySelector("#mempool");
+      const txForm = document.querySelector("#txForm");
+      const toAddressInput = document.querySelector("#toAddress");
+      const amountInput = document.querySelector("#amount");
+      const txResultEl = document.querySelector("#txResult");
+      const mineBtn = document.querySelector("#mineBtn");
+      const mineResultEl = document.querySelector("#mineResult");
+      const refreshBtn = document.querySelector("#refreshBtn");
+
+      async function loadWallet() {
+        try {
+          const { data } = await axios.get("/api/wallet");
+          publicKeyEl.textContent = data.publicKey;
+          balanceEl.textContent = data.balance;
+        } catch (error) {
+          console.error("지갑 정보를 불러오는데 실패했습니다:", error);
+          publicKeyEl.textContent = "지갑 정보를 불러올 수 없습니다.";
+          balanceEl.textContent = "-";
+        }
+      }
+
+      async function loadChain() {
+        try {
+          const { data } = await axios.get("/api/chain");
+          chainEl.textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+          console.error("블록체인 정보를 불러오는데 실패했습니다:", error);
+          chainEl.textContent = "블록체인 정보를 불러올 수 없습니다.";
+        }
+      }
+
+      async function loadMempool() {
+        try {
+          const { data } = await axios.get("/api/mempool");
+          mempoolEl.textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+          console.error("메모풀 정보를 불러오는데 실패했습니다:", error);
+          mempoolEl.textContent = "메모풀 정보를 불러올 수 없습니다.";
+        }
+      }
+
+      async function loadAll() {
+        // 각각 병렬로 처리되며 모두 처리되었을때 동시에 모두 처리중이다가 다 끝나면 
+        await Promise.all([loadWallet(), loadChain(), loadMempool()]);
+      }
+
+      function updateTxResult(message, isError = false) {
+        txResultEl.textContent = message;
+        txResultEl.style.color = isError ? "red" : "green";
+      }
+
+      function updateMineResult(message, isError = false) {
+        mineResultEl.textContent = message;
+        mineResultEl.style.color = isError ? "red" : "green";
+      }
+
+      txForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        updateTxResult("");
+
+        const toAddress = toAddressInput.value.trim();
+        const amount = Number(amountInput.value);
+
+        try {
+          const { data } = await axios.post("/api/transaction", {
+            toAddress,
+            amount,
+          });
+          if (data.success) {
+            updateTxResult("트랜잭션이 전송되었습니다.");
+            txForm.reset();
+            loadAll();
+          } else {
+            updateTxResult(`오류"}`, true);
+          }
+        } catch (error) {
+          updateTxResult(
+            `오류`,
+            true
+          );
+        }
+      });
+
+      mineBtn.addEventListener("click", async () => {
+        updateMineResult("");
+
+        try {
+          const { data } = await axios.post("/api/mine");
+          if (data.success) {
+            updateMineResult("블록이 성공적으로 채굴되었습니다.");
+            loadAll();
+          } else {
+            updateMineResult(`오류`, true);
+          }
+        } catch (error) {
+          updateMineResult(
+            `오류`,
+            true
+          );
+        }
+      });
+
+      refreshBtn.addEventListener("click", loadAll);
+
+      // 페이지 로드 시 최초 데이터 가져오기
+      loadAll();
+    </script>
+  </body>
+</html>

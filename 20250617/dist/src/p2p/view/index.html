@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블록 p2p 노드 프로그램</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>노드 상태</h1>
+    <h2>지갑</h2>
+    <strong>공개키 : </strong><span id="publicKey"></span><br>
+    <strong>잔액 : </strong><span id = "balance"></span><br>
+
+    <button id = "refreshBtn">상태 새로고침</button>
+    <h2>트랜잭션 생성</h2>
+    <form id = "txForm">
+        <label for = "">받는 지갑 주소</label><br>
+        <input type = "text" id ="txAddress" size = "60" required><br>
+        <label for="">보낼 금액</label><br>
+        <input type="number" id = "amountInput" min = "0" required><br>
+        <button>트랜잭션 전송</button><br>
+    </form>
+    <div id="txResult"></div>
+    <h2>블록 채굴</h2>
+    <button id="mineBtn">블록 채굴하기</button>
+    <div id = "mineResult"></div>
+
+    <h2>블록 체인</h2>
+    <pre id="chain"></pre>
+
+    <h2>트랜잭션 풀</h2>
+    <pre id = "mempool"></pre>
+</body>
+<script>
+    const loadWallet = async () => {
+        const {data} = await axios.get("/wallet")
+        console.log(data)
+        publicKey.innerHTML = data.publicKey;
+        balance.innerHTML = data.balance;
+    }
+    // loadWallet();
+
+    const loadChain = async () => {
+        const {data} = await axios.get("/chain")
+        chain.textContent = JSON.stringify(data, null, 2);
+    }
+
+    // loadChain();
+
+    const loadMempool = async() => {
+        const {data} = await axios.get("/mempool");
+        mempool.textContent = JSON.stringify(data, null , 2)
+    }
+    // loadMempool();
+
+    // promise
+    const loadAll = async() => {
+        // 비동기 처리를 병렬로 작업
+        // 각각 비동기 처리 구문을 병렬로 처리하면서
+        // 모든 비동기가 처리되었는지. 처리가 되면 종료
+        await Promise.all([loadWallet(), loadChain(), loadMempool()])
+    }
+
+    const updateTxResult = (message, isError = false) => {
+        txResult.innerHTML = message;
+        txResult.style.color = isError ? "red" : "green"
+    }
+    
+    const updateMineResult = (message, isError = false) => {
+        mineResult.innerHTML = message;
+        mineResult.style.color = isError ? "red" : "green"
+    }
+
+    txForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        updateTxResult("");
+        const toAddress = txAddress.value.trim();
+        const amount = parseInt(amountInput.value);
+        
+        const {data} = await axios.post("/transaction", {
+            toAddress,
+            amount
+        })
+        if (data.message) {
+            updateTxResult("트랜잭션 전송")
+            txForm.reset();
+            loadAll();
+        }else {
+            updateTxResult("트랜잭션 전송 실패", true)
+        }
+    })
+
+    mineBtn.addEventListener("click", async() => {
+        updateMineResult("");
+
+        const {data} = await axios.post("/mine");
+        updateMineResult(data.message);
+        loadAll(); 
+    })
+
+    refreshBtn.addEventListener("click", loadAll);
+
+    loadAll();
+</script>
+</html>

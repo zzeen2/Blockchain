@@ -99,3 +99,6 @@ const tx = {
 > tsc 컴파일 => 실제로 사용할 프로젝트에 js를 런타임환경에서 실행할 파일
 > ts-node => node 환경에서 메모리상에 컴파일된 코드를 잠시 적제하고 실행을 노드 런타임환경에서 실행해서 코드 테스트
 > jest => ts-node와 같이 node의 런타임 환경에서 테스트코드를 실행
+
+### 공부 ref
+https://medium.com/channelin/utxo%EB%9E%80-%EB%B9%84%ED%8A%B8%EC%BD%94%EC%9D%B8-%EC%86%A1%EA%B8%88%EB%B0%A9%EC%8B%9D-%EA%B0%9C%EB%85%90-%EC%A0%95%EB%A6%AC-fa420fc9c6c4
