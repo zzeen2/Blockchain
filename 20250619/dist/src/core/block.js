@@ -1,0 +1,54 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Block = void 0;
+const util_1 = require("../util");
+const block_hash_1 = require("../util/block_hash");
+const block_target_1 = require("../util/block_target");
+class Block {
+    // 5 (dto 만들고 가져오기 )
+    constructor(headers, body) {
+        this.version = headers.version;
+        this.height = headers.height;
+        this.timestamp = headers.timestamp;
+        this.previousHash = headers.previousHash;
+        this.difficulty = headers.difficulty;
+        this.data = body.data;
+        // 7
+        this.nonce = 0;
+        this.setMerkleRoot(body);
+        this.setHash();
+    }
+    // private 외부에서 이 클래스로 만든 인스턴스에서 호출을 할 수 없다.
+    setMerkleRoot(body) {
+        // 머클루트의 기능 util에 빼놓자
+        this.merkleRoot = (0, util_1.createMerkleRoot)(body); //9
+    }
+    // 본인 인스턴스의 해시를 만들때
+    // 마이닝
+    setHash() {
+        // 해시를 만드는 기능을 utill
+        // 목표값 블록의 생성권한을 얻는 목표값
+        // 목표값보다 낮은 해시값을 구하는 것 PoW
+        const target = (0, block_target_1.createBlockTarget)(this.difficulty); //11
+        // 블록 생성 
+        // 해시값을 만들기 위한 DTO 
+        const createHashDto = {
+            version: this.version,
+            height: this.height,
+            timestamp: this.timestamp,
+            previousHash: this.previousHash,
+            difficulty: this.difficulty,
+            merkleRoot: this.merkleRoot,
+            nonce: this.nonce
+        };
+        while (true) {
+            // 블록 해시 생성
+            const currentHash = (0, block_hash_1.createBlockHash)(createHashDto); //15
+            this.hash = currentHash;
+            this.nonce++;
+            if (BigInt("0x" + currentHash) <= BigInt(target))
+                break; //16 //13
+        }
+    }
+}
+exports.Block = Block;
