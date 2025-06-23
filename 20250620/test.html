@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블록체인 트랜잭션 처리 과정</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .diagram-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 40px;
+        }
+        
+        .step {
+            margin-bottom: 50px;
+            padding: 25px;
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            background: white;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: 25px;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .step1 {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+        
+        .step1 .step-number {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+        }
+        
+        .step2 {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+        
+        .step2 .step-number {
+            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            color: white;
+        }
+        
+        .step3 {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        
+        .step3 .step-number {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+            color: white;
+        }
+        
+        .step4 {
+            background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
+        }
+        
+        .step4 .step-number {
+            background: linear-gradient(135deg, #8360c3 0%, #2ebf91 100%);
+            color: white;
+        }
+        
+        .step-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-left: 10px;
+        }
+        
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .process-box {
+            background: rgba(255,255,255,0.9);
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-weight: bold;
+            text-align: center;
+            min-width: 140px;
+            position: relative;
+            transition: transform 0.3s ease;
+            color: #2c3e50;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .process-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .arrow {
+            font-size: 24px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        
+        .sub-process {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .sub-box {
+            background: rgba(52, 73, 94, 0.1);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: normal;
+            color: #2c3e50;
+        }
+        
+        .vertical-arrow {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .vertical-arrow-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .mempool-special {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            border: 3px solid #e17055;
+            position: relative;
+        }
+        
+        .mempool-special::after {
+            content: "📝 대기실";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #e17055;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+        
+        .block-structure {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .block-part {
+            background: rgba(52, 73, 94, 0.1);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            text-align: center;
+            font-weight: normal;
+        }
+        
+        .hash-visual {
+            background: #2c3e50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 9px;
+            margin-top: 8px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border: 3px solid #00b894;
+        }
+        
+        .step-description {
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagram-container">
+        <div class="title">🔗 블록체인 트랜잭션 처리 과정</div>
+        
+        <!-- Step 1: 트랜잭션 생성 및 검증 -->
+        <div class="step step1">
+            <div class="step-number">1️⃣</div>
+            <div class="step-title">트랜잭션 생성 및 검증</div>
+            <div class="step-description">
+                사용자가 송금 버튼을 누르는 순간부터 트랜잭션이 Mempool에 들어가기까지의 과정
+            </div>
+            <div class="flow-container">
+                <div class="process-box">
+                    <div>사용자 액션</div>
+                    <div class="sub-process">
+                        <div class="sub-box">지갑 연결</div>
+                        <div class="sub-box">송금 정보 입력</div>
+                        <div class="sub-box">가스비 설정</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box">
+                    <div>디지털 서명</div>
+                    <div class="sub-process">
+                        <div class="sub-box">개인키로 서명</div>
+                        <div class="sub-box">트랜잭션 해시</div>
+                        <div class="sub-box">무결성 보장</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box">
+                    <div>초기 검증</div>
+                    <div class="sub-process">
+                        <div class="sub-box">서명 유효성</div>
+                        <div class="sub-box">잔액 확인</div>
+                        <div class="sub-box">가스비 검증</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box mempool-special">
+                    <div>Mempool 전송</div>
+                    <div class="sub-process">
+                        <div class="sub-box">대기열 진입</div>
+                        <div class="sub-box">가스비 순 정렬</div>
+                        <div class="sub-box">네트워크 전파</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="vertical-arrow">
+            <div class="vertical-arrow-circle">↓</div>
+        </div>
+        
+        <!-- Step 2: 블록 생성 -->
+        <div class="step step2">
+            <div class="step-number">2️⃣</div>
+            <div class="step-title">블록 생성 (마이닝)</div>
+            <div class="step-description">
+                마이너들이 Mempool에서 트랜잭션을 선택하고 새로운 블록을 만드는 과정
+            </div>
+            <div class="flow-container">
+                <div class="process-box">
+                    <div>트랜잭션 선택</div>
+                    <div class="sub-process">
+                        <div class="sub-box">높은 가스비 우선</div>
+                        <div class="sub-box">블록 크기 제한</div>
+                        <div class="sub-box">유효성 재검증</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box">
+                    <div>Merkle Tree 생성</div>
+                    <div class="sub-process">
+                        <div class="sub-box">트랜잭션 해시화</div>
+                        <div class="sub-box">트리 구조 생성</div>
+                        <div class="sub-box">루트 해시 계산</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box">
+                    <div>작업증명 (PoW)</div>
+                    <div class="sub-process">
+                        <div class="sub-box">Nonce 값 탐색</div>
+                        <div class="sub-box">목표 난이도 달성</div>
+                        <div class="sub-box">해시 퍼즐 해결</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box highlight-box">
+                    <div>블록 완성!</div>
+                    <div class="block-structure">
+                        <div class="block-part">
+                            <strong>헤더</strong><br>
+                            이전 블록 해시<br>
+                            Merkle Root<br>
+                            타임스탬프<br>
+                            Nonce
+                        </div>
+                        <div class="block-part">
+                            <strong>바디</strong><br>
+                            트랜잭션 목록<br>
+                            실행 결과
+                        </div>
+                    </div>
+                    <div class="hash-visual">
+                        SHA256: 00000abc1234...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="vertical-arrow">
+            <div class="vertical-arrow-circle">↓</div>
+        </div>
+        
+        <!-- Step 3: 네트워크 합의 -->
+        <div class="step step3">
+            <div class="step-number">3️⃣</div>
+            <div class="step-title">네트워크 합의</div>
+            <div class="step-description">
+                완성된 블록이 네트워크 전체에 전파되고 다른 노드들이 검증하는 과정
+            </div>
+            <div class="flow-container">
+                <div class="process-box">
+                    <div>블록 브로드캐스트</div>
+                    <div class="sub-process">
+                        <div class="sub-box">P2P 네트워크 전파</div>
+                        <div class="sub-box">인접 노드로 전송</div>
+                        <div class="sub-box">전 세계 확산</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box">
+                    <div>블록 검증</div>
+                    <div class="sub-process">
+                        <div class="sub-box">해시 검증</div>
+                        <div class="sub-box">난이도 확인</div>
+                        <div class="sub-box">트랜잭션 유효성</div>
+                        <div class="sub-box">이전 블록 연결</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box">
+                    <div>합의 달성</div>
+                    <div class="sub-process">
+                        <div class="sub-box">과반수 동의</div>
+                        <div class="sub-box">Longest Chain Rule</div>
+                        <div class="sub-box">포크 해결</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box">
+                    <div>블록 승인</div>
+                    <div class="sub-process">
+                        <div class="sub-box">네트워크 수용</div>
+                        <div class="sub-box">Mempool 업데이트</div>
+                        <div class="sub-box">다음 블록 준비</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="vertical-arrow">
+            <div class="vertical-arrow-circle">↓</div>
+        </div>
+        
+        <!-- Step 4: 체인 업데이트 -->
+        <div class="step step4">
+            <div class="step-number">4️⃣</div>
+            <div class="step-title">체인 업데이트</div>
+            <div class="step-description">
+                승인된 블록이 블록체인에 영구 기록되고 모든 계정 상태가 업데이트되는 과정
+            </div>
+            <div class="flow-container">
+                <div class="process-box">
+                    <div>블록체인 연결</div>
+                    <div class="sub-process">
+                        <div class="sub-box">체인에 블록 추가</div>
+                        <div class="sub-box">불변성 획득</div>
+                        <div class="sub-box">영구 저장</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box">
+                    <div>상태 업데이트</div>
+                    <div class="sub-process">
+                        <div class="sub-box">계정 잔액 변경</div>
+                        <div class="sub-box">스마트 컨트랙트 실행</div>
+                        <div class="sub-box">전역 상태 갱신</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box">
+                    <div>확정성 달성</div>
+                    <div class="sub-process">
+                        <div class="sub-box">트랜잭션 완료</div>
+                        <div class="sub-box">되돌릴 수 없음</div>
+                        <div class="sub-box">신뢰성 보장</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="process-box highlight-box">
+                    <div>✅ 완료!</div>
+                    <div class="sub-process">
+                        <div class="sub-box">거래 성공</div>
+                        <div class="sub-box">지갑 반영</div>
+                        <div class="sub-box">영구 기록</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
