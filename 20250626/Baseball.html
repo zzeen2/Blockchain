@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@4.16.0/dist/web3.min.js"></script>
+</head>
+<body>
+    <div>티켓의 가격 : <span id = "ticketPrice"></span></div>
+    <div>현재 게임 진행도 : <span id = "progress"></span> / <span>10</span> </div>
+    <div>총 상금 : <span id = "reward"></span></div>
+    <div id = "playing"></div>
+
+    <div>
+        <label for="">정답 입력</label>
+        <input type="text" id = "resultCount">
+        <button id = "resultBtn">정답 제출</button>
+    </div>
+
+    <div>
+        어드민 전용
+        <div id = "admin"></div>
+        <button id = "adminBtn">어드민 정답 확인</button>
+    </div>
+
+    <div>
+        게임 로그
+        <div id = "logs">...로딩중</div>
+    </div>
+</body>
+<script>
+    const CA = "0xaEedd720412d46C58cD5C669C90A6A71EE682384"
+    const abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"uint256","name":"count","type":"uint256"}],"name":"GameJoin","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"uint256","name":"count","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"GameReward","type":"event"},{"inputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"name":"gameStart","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"getProgress","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getRandom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getReward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTicket","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"isPlaying","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}]
+
+    const web3 = new Web3(window.ethereum);
+    let contract;
+    // 접속중 계정 확인
+    const getAccount = async() => {
+        const [account] = await web3.eth.getAccounts();
+        return account;
+    }
+
+    const setContract = () => {
+        contract = new web3.eth.Contract(abi, CA);
+        
+    }
+    // 티켓 금액 조회
+    const getTicket = async () => {
+        const value = await contract.methods.getTicket().call();
+        return await web3.utils.fromWei(value, "ether");
+    }
+
+    const getReward = async() => {
+        const value = await contract.methods.getReward().call();
+        return await web3.utils.fromWei(value, "ether")
+    }
+
+    const getProgress = async() => {
+        const value = await contract.methods.getProgress().call();
+        return await value
+    }
+
+    const isPlaying = async () => {
+        const value = await contract.methods.isPlaying().call();
+        return value ? "게임중" : "게임 종료"
+    }   
+
+    // 게임 시작
+    const gameStart = async() => {
+        const {value} = resultCount;
+        if(value.length < 3 && value.length >= 4) {
+            alert("숫자를 3자리 입력하세요")
+            return
+        }
+        await contract.methods.gameStart(parseInt(value)).send({
+            from : await getAccount(),
+            value : web3.utils.toWei("0.01", "ether")
+    });
+    }
+
+    // 관리자 정답 조회
+    const getAdmin = async () => {
+        const value = await contract.methods.getRandom().call({
+            from : await getAccount()
+        })
+        admin.innerHTML = value;
+    }
+
+    const reloadLog = async() => {
+        const gameJoinLogs = await contract.getPastEvents("GameJoin", {
+            fromBLock : 0,
+            toBlock : "latest"
+        })
+        const gameRewardLogs = await contract.getPastEvents("GameReward", {
+            fromBLock : 0,
+            toBlock : "latest"
+        })
+        const allLogs = [...gameJoinLogs, ...gameRewardLogs].sort((a,b) => parseInt(a.blockNumber) - b.blockNumber)
+        console.log(allLogs)
+        logs.innerHTML = ""
+        allLogs.forEach((log) => {
+            const div = document.createElement("div");
+            if(log.event === "GameJoin") {
+                div.innerHTML = `게임 참가자 ${log.returnValues.account.player} 입력값은 ${log.returnValues.count}`
+            }else {
+                const result = web3.utils.fromWei(log.returnValues.reward, "ether")
+                div.innerHTML = `정답자 ${log.returnValues.player} 입력값 ${log.returnValues.count} 보상 ${web3.utils.fromWei()} ETH`
+            }
+            logs.append(div)
+        })
+    }
+
+    const init = async() => {
+        setContract()
+        ticketPrice.innerHTML = await getTicket();
+        progress.innerHTML = await getProgress();
+        reward.innerHTML = await getReward();
+        playing.innerHTML = await isPlaying();
+        resultBtn.onclick = gameStart;
+        adminBtn.onclick = getAdmin;
+        await reloadLog();
+
+    }
+    init();
+
+    // init();
+
+</script>
+</html>

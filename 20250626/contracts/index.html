@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/web3@4.16.0/dist/web3.min.js"></script>
+    <style>
+        #owner {
+            display: none;
+        }
+        #owner.active {
+            display: block;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <h2>zzeen bank</h2>
+    <div id = "owner">
+        관리자 입니다
+        <label for = "">계정</label><br>
+        <input type="text" id = "limitAccount" placeholder="출금 제한을 할 계정을 입력하세요"> <br>
+        <label for="">한도</label><br>
+        <input  id = "limitAmount" type = "number" placeholder="최소 0.1" step="0.001"><br>
+        <button id = "limit_btn">설정하기</button>
+    </div>
+    <div>
+        입금
+        <label for="">입금할 금액 ETH</label> <br>
+        <input type="number" placeholder="최소 0.001" step="0.001" id = "deposit"> <br>
+        <button id = "deposit_btn">입금</button>
+    </div>
+    <div>
+        출금
+        <label for="">출금할 금액 ETH</label> <br>
+        <input type="number" placeholder="최소 0.001" step="0.001" id = "withdrawal"> <br>
+        <button id = "withdrawal_btn">출금</button>
+        <div>내 출금 가능 한도 : <span id = "limit"></span></div>
+    </div>
+    <div>
+        내 입금된 내 잔액
+        <span>잔액 : <span id ="myBalance"></span></span>
+    </div>
+    <div>
+        거래 이력 <br>
+        <span id = "logs">...로딩중</span>
+    </div>
+</body>
+<script>
+    const CA = "0xb70b0f2d4c001b80793edd6b3992c83e23589faf"
+    const ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"uint256","name":"count","type":"uint256"}],"name":"GameJoin","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"uint256","name":"count","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"GameReward","type":"event"},{"inputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"name":"gameStart","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"getProgress","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getRandom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getReward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTicket","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"isPlaying","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}]
+
+    // 라이브러리들이 인스턴스 객체 생성
+    let web3;
+    let contract; // abi를 가지고 컨트랙트 트랜잭션 호출의 메서드를 가지고있는 인스턴스
+    let accounts;
+    let _owner; // 컨트랙트 소유자
+
+    const init = async () => {
+        if(window.ethereum) {
+            await window.ethereum.request({method : "eth_requestAccounts"})
+            web3 = new Web3(window.ethereum);
+
+            // 여러개의 계정들
+            accounts = await web3.eth.getAccounts();
+            console.log(accounts)
+            // 컨트랙트 인스턴스 생성
+            contract = new web3.eth.Contract(ABI, CA);
+            _owner = await contract.methods.owner().call();
+            console.log(_owner);
+            // call 조회 
+            //_ownerconsole.log(await contract.method.owner().call());
+
+            // 컨트랙트의 주인은 지금은 배포를 실수해서 그냥 하는데 이렇게하면 안된다.
+            if( _owner === accounts[0]){
+                document.querySelector("#owner").classList.add("active");
+            } else {
+                document.querySelector("#owner").classList.remove("active");
+            }
+            // // 계정 변경 이벤트 리스너 추가
+            // window.ethereum.on('accountsChanged', async (newAccounts) => {
+            //     accounts = newAccounts;
+            //     console.log("계정 변경됨:", accounts[0]);
+                
+            //     // 새 계정이 관리자인지 확인
+            //     if(_owner === accounts[0]) {
+            //         document.querySelector("#owner").classList.add("active");
+            //     } else {
+            //         document.querySelector("#owner").classList.remove("active");
+            //     }
+                
+            //     // 잔액도 새로 불러오기
+            //     await reload();
+            // });
+        }
+    }
+
+    // 입금 함수
+    const depositFn = async () => {
+        const value = deposit.value;
+        if(value <= 0) {
+            alert("입금 금액을 확인하세요. 최소 금액 0.001 ETH")
+            return;
+        }
+
+        // 가스비를 내고 상태변수 업데이트
+        await contract.methods.deposit().send({
+            from: accounts[0],
+            value: web3.utils.toWei(value, 'ether')
+        });
+        alert("입금 성공")
+        reloadEvents()
+    }
+    // deposit_btn.onclick = depositFn;
+
+    // 입금한 금액을 보여주는 함수
+    const reload = async () => {
+        const value = await contract.methods.getBalance().call({
+            from : accounts[0]
+        }); 
+        const _limit = await contract.methods.getLimit().call({
+            from : accounts[0]
+        }); 
+
+        // console.log("내 잔액", value); // wei
+        // eth 단위로 바꿔서
+        const eth = web3.utils.fromWei(value, "ether") // ETH 단위로 변경
+        console.log("내 잔액", eth);
+        myBalance.innerHTML = eth + "ETH"
+
+        const ethlimit = web3.utils.fromWei(_limit, "ether") // ETH 단위로 변경
+        limit.innerHTML = eth + "ETH"
+
+        reloadEvents();
+    }
+
+    // 비동기 처리 꼬이지않게 순서 정해주기
+    const update = async() => {
+        await init();
+        await reload();
+        deposit_btn.onclick = depositFn;
+        limit_btn.onclick = setLimit;
+        withdrawal_btn.onclick = withdrawalFn;
+    }
+
+    update();
+
+    // 관리자 출금 제한 설정 함수
+    const setLimit = async () => {
+        const account = limitAccount.value;
+        const amount = limitAmount.value;
+
+        // 잘못된 계정의 값
+        // 상태변수의 잘못된값이 들어가지 않게 방지  
+        // web3.utils.isAddress() << 지갑 주소의 형태가 맞는지. 지갑 주소 형태가 맞으면 true
+        if(!web3.utils.isAddress(account)) {
+            alert("지갑 주소를 확인하세요")
+            return;
+        }
+
+        // 단위변경 이더를 wei단위로
+        const wei = web3.utils.toWei(amount, "ether")
+
+        // contract.methods.setLimit() 해시값 만드는것 함수명이랑 매개변수 내용이 필요하다. 
+        await contract.methods.setLimit(account, wei).send({
+            from : accounts[0]
+        });
+        alert("출금 한도 설정 완료")
+    }
+
+    // 출금 함수
+    const withdrawalFn = async () => {
+        const value = withdrawal.value;
+        if(value <= 0){
+            alert("출금 최소 금액은 0.001 ETH")
+            return;
+        }
+
+        const wei = web3.utils.toWei(value, "ether");
+        await contract.methods.withdrawal(wei).send({from : accounts[0]});
+        alert("출금완료")
+        reload();
+        reloadEvents()
+    }
+
+    // 이벤트 로그조회함수
+    const reloadEvents = async() => {
+        const depositEventLogs = await contract.getPastEvent("DepositEn", {
+            fromBlock : 0,
+            toBlock : "latest"
+        })
+        const WithdrawalEventLogs = await contract.getPastEvent("WithdrawalEn", {
+            fromBlock : 0,
+            toBlock : "latest"
+        })
+        const limitEventLogs = await contract.getPastEvent("SetLinitEn", {
+            fromBlock : 0,
+            toBlock : "latest"
+        })
+        //console.log(depositEventLogs)
+        // 나열
+        // 모든 이벤트를 한번 합쳐서 나열
+        // 블록 넘버로 정렬을 시키면 순서대로
+        const allLogs = [...depositEventLogs, ...WithdrawalEventLogs, ...limitEventLogs]
+        // 정렬
+        allLogs.sort((a,b) => a.blockNumber - b.blockNumber) // 콜백 반복 호출
+
+        console.log(allLogs, "sort")
+
+
+        logs.innerHTML = "";
+        allLogs.forEach((log) => {
+            const div = document.createElement("div")
+            if(log.event === "DepositEn"){
+                const amount = web3.utils.fromWei(log.returnValues.amount,"ether")
+                div.innerHTML = `입금한 이력 : ${log.returnValue.account} 입금자 ${log.returnValue.amount}ETH`
+            }else if(log.event === "WithdrawalEn"){
+                const amount = web3.utils.fromWei(log.returnValues.amount,"ether")
+                div.innerHTML = `출금한 이력 : ${log.returnValue.account} 출금자 ${log.returnValue.amount}ETH`
+            }else {
+                const Limit = web3.utils.fromWei(log.returnValues.amount,"ether")
+                div.innerHTML = `한도 설정 : ${log.returnValue.account} 계정 ${}ETH`
+            }
+
+        })
+
+        
+
+    }
+</script>
+</html>
