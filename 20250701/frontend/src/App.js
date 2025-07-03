@@ -2,13 +2,8 @@ import { useEffect, useState } from "react";
 import useWallet from "./hooks/useWallet";
 
 function App() {
+  // 커스텀 훅에서 필요한거 가져오기
   const {contract, account, isNetwork, connectWallet} = useWallet();
-  // 상태변수 정리
-  // 디지몬 목록 내가 가지고있는
-  // 내가 뽑은 디지몬 보여줄 상태변수
-  // 뽑을때 로딩
-  // 뽑은 이벤트 이력
-  // 이력을 보여줄때 전체 이력과 내 이력만 보기위한 탭 상태변수
 
   const [digimons, setDigimons] = useState([]); // 디지몬 목록 내가 가지고있는
   const [isLoading, setisLoading] = useState(false); // 뽑을때 로딩
@@ -18,15 +13,15 @@ function App() {
 
   const tabs = ["ALL", "MY"];
 
+  // 구입 버튼 누르면 실행할 함수
   const buyDigimon = async () => {
-    if(!contract) return;
+    if(!contract) return; // 컨트랙트 없으면 종료
 
-    setisLoading(true);
-    const transaction = await contract.buyDigimon(); // 가스비 지불
-    await transaction.wait();
-    // 구매했을때 뽑힌 디지몬을 내가 가지고 있는 보관함에 넣어줘야한다.
-    await loadDigimon();
-    setisLoading(false);
+    setisLoading(true); // 로딩 시작(버튼 비활성화)
+    const transaction = await contract.buyDigimon(); // 스마트 컨트랙트 호출(Digimon.sol에서 정의)
+    await transaction.wait(); // 트랜잭션 완료 대기
+    await loadDigimon(); // 디지몬 목록 새로고침
+    setisLoading(false); // 로딩 종료
   }
 
   // 디지몬 조회 함수
@@ -48,7 +43,7 @@ function App() {
     if(!contract) return;
     contract.on("DigimonEvent", eventHandler);
 
-    // 이벤트 로그 가져오기
+    // 페이지를 처음 로드할 때 과거 이벤트 로그 가져오기(뽑앗던거 보여주려고)
     // 비동기적으로 데이터를 가져와야하니
     const eventLoad = async() => {
       const events = await contract.queryFilter("DigimonEvent");
@@ -77,7 +72,7 @@ function App() {
       </button>
 
       <h2>내가 방금 뽑은 디지몬</h2>
-      {lastestDigimon && (
+      {lastestDigimon && ( // lastestDigimon이 있을때만 렌더링
         <DigimonCard 
           url={lastestDigimon.url} 
           name={lastestDigimon.name}

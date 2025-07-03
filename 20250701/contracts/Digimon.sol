@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Digimon is ERC20 {
-    uint private constant TOKEN_PRICE = 10 ether;
+    uint private constant TOKEN_PRICE = 10 ether; 
     // 디지몬 객체 형태
     struct Dig {
         string name;
