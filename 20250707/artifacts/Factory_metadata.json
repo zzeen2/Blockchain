@@ -1,0 +1,80 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "createContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getContract",
+				"outputs": [
+					{
+						"internalType": "contract DAO",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Factory.sol": "Factory"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/DAO.sol": {
+			"keccak256": "0x5405051d969d7bad2dd270f70af1a94ac333d96105796f52e1b68111584ed838",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://868f30c4b67a51abda6c4481406ebbdf2eba9e63e0ce1b037705ec7ea0195226",
+				"dweb:/ipfs/QmSsAT951jio57rUMjXnRdLMSQ91hQn1ZxWHx9bH1UpwZe"
+			]
+		},
+		"contracts/Factory.sol": {
+			"keccak256": "0x6f650145d85de0f73ac3c0883708c3b9c80c267716fc1cbf5c260cff85898c0a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://42f4c0e8fda2d4a15a5c0081f83fd4389879576b855df34043823ee02db272b2",
+				"dweb:/ipfs/QmY8ERnTvS4c63UrbFrTz5GA9PnTi97qDbVDDDHroeWPM6"
+			]
+		}
+	},
+	"version": 1
+}
