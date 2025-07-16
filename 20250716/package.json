@@ -1,0 +1,15 @@
+{
+  "name": "20250716",
+  "version": "1.0.0",
+  "description": "> 이더리움의 계정 EOA CA  > EOA : 일반 사용자의 계정  > CA : 컨트랙트 주소, 스마트 계정",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethers": "^6.15.0"
+  }
+}

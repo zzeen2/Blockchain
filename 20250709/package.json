@@ -1,0 +1,15 @@
+{
+  "name": "20250709",
+  "version": "1.0.0",
+  "description": "> 계정 추상화 ERI의 내용이 지금까지 추상화 혹은 트랜잭션의 구조 서명의 구조 \r > 가스 스테이션",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.3.0"
+  }
+}
