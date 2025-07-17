@@ -1,0 +1,162 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "sucess",
+						"type": "bool"
+					}
+				],
+				"name": "UserOperationHandled",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "sender",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "nonce",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bytes",
+								"name": "initCode",
+								"type": "bytes"
+							},
+							{
+								"internalType": "bytes",
+								"name": "callData",
+								"type": "bytes"
+							},
+							{
+								"internalType": "uint256",
+								"name": "callGasLimit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "verificationGasLimit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "preverificationGas",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "maxFeePerGas",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "maxPriorityFeeGas",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bytes",
+								"name": "paymasterAndData",
+								"type": "bytes"
+							},
+							{
+								"internalType": "bytes",
+								"name": "signature",
+								"type": "bytes"
+							}
+						],
+						"internalType": "struct EntryPoint.UserOperation[]",
+						"name": "ops",
+						"type": "tuple[]"
+					}
+				],
+				"name": "handleOps",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "nonces",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/EntryPoint.sol": "EntryPoint"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/EntryPoint.sol": {
+			"keccak256": "0x423e85354eaa979a539689db55ba2757b3b6fe6f6989e2f65b8a1e126d492eb2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7fa48eb514c2e21936edc717aa3d3b6503ebb71e94249c63b83c5a5fe027f025",
+				"dweb:/ipfs/QmWeTgPr6PQqNReTAjw5J9zAY7r7aM4FpFs4cj4Bgsxufv"
+			]
+		},
+		"contracts/SmartAccount.sol": {
+			"keccak256": "0xb52c970930b8d700f6d6c4852ac93bcf22b803ba395858499a5cce8a67d57400",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://32cd48309a225f90ead02c47e571b2144224fdb532c1ff419578f7a4a8866b8a",
+				"dweb:/ipfs/QmYQZr2GkzpJtTNDLE2ymDiCX8BwN8tQD58WcJhYrwErM7"
+			]
+		}
+	},
+	"version": 1
+}

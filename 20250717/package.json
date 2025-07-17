@@ -1,0 +1,15 @@
+{
+  "name": "20250717",
+  "version": "1.0.0",
+  "description": "> 엔트리 포인트의 이해가 중요하고, > 엔트리 포인트를 이해해야 userOps의 구조가 이해가 된다. > handleOps라는 메서드를 생성해서 유저가 보낸 스마트 계정의 작업을 처리해준다.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethers": "^6.15.0"
+  }
+}
