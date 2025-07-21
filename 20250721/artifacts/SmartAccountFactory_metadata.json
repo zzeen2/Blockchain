@@ -1,0 +1,103 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_entryPoint",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "createAccount",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "smartAccount",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "getAccount",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/SmartAccountFactory.sol": "SmartAccountFactory"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/SmartAccount.sol": {
+			"keccak256": "0x00b1d70d6e441c1050e5f4c1c235c2d03a6646644cd0d20c8160801bc1ea6cfd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4d0ae8539d050db6778b990d769c6108d7eca0be70c197f4da8ea9a861a44eeb",
+				"dweb:/ipfs/QmSbdkEAcMs2J1XCK7oL9jMrS5fzs2B5V2WZSFMZU2hRdk"
+			]
+		},
+		"contracts/SmartAccountFactory.sol": {
+			"keccak256": "0x90d8deba9e9ac811f054669171aabbde44323c4c84a6106fa279bbb57e64633d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4fe90928fcd64b55a2f79c833e6c09e8c69c270e8e8ac23fe4c3851a6f95ea9e",
+				"dweb:/ipfs/QmZ7yBDpgug8izEkMrYakeWWLUKoCzWGVp1rGorzs949Xq"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,65 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "balanceOf",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/PayMaster.sol": "ISoonToken"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/PayMaster.sol": {
+			"keccak256": "0x45dea67ae315dc80fd10ff202cd1de13f68a2c3188be34cf66df7f200b861335",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3ea483ec7f2e1e5fe9ff4b06ce66413760e0e2eb7794f59cd5595a4c5790bf40",
+				"dweb:/ipfs/QmYSpVrwkH3NPRKiUQJrig2x2a73VPWnfn1iqnCzBLrmiX"
+			]
+		}
+	},
+	"version": 1
+}
