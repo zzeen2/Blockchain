@@ -39,3 +39,18 @@
 
 
 remixd -s . -u https://remix.ethereum.org/
+
+## 전체 흐름
+[1] 사용자 로그인 → 개인키 생성 (createAccount.js) <br>
+      ↓<br>
+[2] SmartAccountFactory → 스마트 지갑 배포<br>
+      ↓<br>
+[3] 사용자가 트랜잭션 요청 → UserOperation 생성 (sendUserOps.js)<br>
+      ↓<br>
+[4] 번들러가 요청 수집 후 → EntryPoint.handleOps() (bundler.js)<br>
+      ↓<br>
+[5] EntryPoint → SmartAccount.validateUserOp() → execute()<br>
+      ↓<br>
+[6] Paymaster가 조건 검증 후 가스비 대납<br>
+      ↓<br>
+[7] 트랜잭션 성공 → 이벤트 로그 발생, 토큰 전송<br>
